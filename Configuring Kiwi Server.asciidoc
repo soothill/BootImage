@@ -37,19 +37,21 @@ You will now have installed everything you need to be able to build an image but
 
 *Building the Kiwi config file*
 
-The default Kiwi config files can be found in this directory 
+The default Kiwi config files can be found in this directory /usr/share/kiwi/image/suse-SLE15-Enterprise-JeOS in here are the files that need copying to a working directory elsewhere.
 
 
-This file by default has the following section in it that needs to be replaced.
+This JeOS.kiwi file has the following section in it that needs to be replaced.
 
 [source]
     <repository type="rpm-md" >
         <source path='obsrepositories:/'/>
     </repository>
 
-We first need to list out all the repos that the server is currently connected to so these can be added into the config file.
+This section should be replaced with the list of repos from the RMT server.
 
-This command will take all the repos and modify them into the correct format to be adding into the kiwi config file.
+Todo this we first need to list out all the repos that the build is currently connected to so these can be added into the config file.
+
+This command will take all the repos and modify them into the correct format to be adding into the kiwi config file. Care should be taken to ensure that no non essential Repo's are carried across.
 
 [source]
     for list in $(zypper lr -E | grep SLE[-S] | tr -d ' ' | cut -d'|' -f1); do URL=$(zypper lr -r ${list} | grep ^URI | tr -d ' ' | sed -e 's/URI\://'); echo "    <repository type=\"rpm-md\" >"; echo "    <source path='${URL}'/>"; echo "    </repository>"; done > repolist.txt
@@ -79,7 +81,7 @@ We now have a kiwi file that can build the various JeOS images. This can be done
 
 *Considerations for images*
 
-_OS file system_
+_Boot file system_
 
 All of the images include BTRFS as the OS file system but this may not be the best fir in all environments and consideration should be given to choosing the appropriate file system. The Openstack image defaults to XFS.
 
