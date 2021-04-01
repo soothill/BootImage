@@ -89,7 +89,7 @@ _Initial boot configuration_
 
 The OpenStack image includes the packages that will add cloud-init into the environment so that the images can be configured with the appropriate configuration settings for the environment.
 
-IF some alternative initial boot configuration is required then these can be added into the Kiwi config file as needed.
+If some alternative initial boot configuration is required then these can be added into the Kiwi config file as needed.
 
 
 
