@@ -52,7 +52,7 @@ We first need to list out all the repos that the server is currently connected t
 This command will take all the repos and modify them into the correct format to be adding into the kiwi config file.
 
 [source]
-for list in $(zypper lr -E | grep SLE[-S] | tr -d ' ' | cut -d'|' -f1); do URL=$(zypper lr -r ${list} | grep ^URI | tr -d ' ' | sed -e 's/URI\://'); echo "    <repository type=\"rpm-md\" >"; echo "    <source path='${URL}'/>"; echo "    </repository>"; done > repolist.txt
+    for list in $(zypper lr -E | grep SLE[-S] | tr -d ' ' | cut -d'|' -f1); do URL=$(zypper lr -r ${list} | grep ^URI | tr -d ' ' | sed -e 's/URI\://'); echo "    <repository type=\"rpm-md\" >"; echo "    <source path='${URL}'/>"; echo "    </repository>"; done > repolist.txt
 
 By default these will all be set to be https which if you have a valid certificate on your RMT server will work correctly but if the RMT server is using a self signed certificate which is the usual default installaiton then you will need to change this to be http otherwise the kiwi tool will fail.
 
@@ -72,10 +72,10 @@ Once this has been completed the file with the repos in it needs including in th
 We now have a kiwi file that can build the various JeOS images. This can be done as follows
 
 [source]
-kiwi-ng --profile=VMware --type=oem system build --target-dir /tmp/image/VMWare --description .
+    kiwi-ng --profile=VMware --type=oem system build --target-dir /tmp/image/VMWare --description .
 
 [source]
-kiwi-ng --profile=kvm-and-xen --type=oem system build --target-dir /tmp/image/xen --description .
+    kiwi-ng --profile=kvm-and-xen --type=oem system build --target-dir /tmp/image/xen --description .
 
 *Considerations for images*
 
