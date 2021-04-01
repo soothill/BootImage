@@ -1,0 +1,98 @@
+*Configuring a Kiwi boot image*
+
+This document will walk take you through the process for building a Kiwi boot image that will use a local RMT server. The RMT server will use a local repository as the source for the packages.
+
+
+This image will be based on the process for building a JeOS image and can then be further customized to add any local changes that will be needed for your implementation.
+
+The JeOS build process allows for a number of different images to be built depending on your requirements these include Openstack, KVM and VMWare as well as some other options.
+
+*Configuring a build server*
+
+The first stage to being able to build an image is to connect to the correct Repo's on the RMT server to act as a source for the packages you will need.
+
+
+
+[source]
+    SUSEConnect -p sle-module-desktop-applications/15.2/x86_64
+
+[source]
+    SUSEConnect -p sle-module-server-applications/15.2/x86_64
+
+[source]
+    SUSEConnect -p sle-module-development-tools/15.2/x86_64
+
+[source]
+    zypper refresh
+
+
+The second part is then to install the Kiwi JeOS templates. This will also pull in Kiwi and other dependencies
+
+[source]
+    zypper in kiwi-templates-JeOS
+
+
+You will now have installed everything you need to be able to build an image but by default these default image files are configured to use the OBS server and this needs changing to use your local RMT server.
+
+
+*Building the Kiwi config file*
+
+The default Kiwi config files can be found in this directory 
+
+
+This file by default has the following section in it that needs to be replaced.
+
+[source]
+    <repository type="rpm-md" >
+        <source path='obsrepositories:/'/>
+    </repository>
+
+We first need to list out all the repos that the server is currently connected to so these can be added into the config file.
+
+This command will take all the repos and modify them into the correct format to be adding into the kiwi config file.
+
+[source]
+for list in $(zypper lr -E | grep SLE[-S] | tr -d ' ' | cut -d'|' -f1); do URL=$(zypper lr -r ${list} | grep ^URI | tr -d ' ' | sed -e 's/URI\://'); echo "    <repository type=\"rpm-md\" >"; echo "    <source path='${URL}'/>"; echo "    </repository>"; done > repolist.txt
+
+By default these will all be set to be https which if you have a valid certificate on your RMT server will work correctly but if the RMT server is using a self signed certificate which is the usual default installaiton then you will need to change this to be http otherwise the kiwi tool will fail.
+
+[source]
+    sed -i 's/https/http/g' repolist.txt
+
+
+
+The list of repos may have some NFS repos listed within it depending on how the installation was done. This command will remove the NFS repos from the config file.
+
+[source]
+    sed -i '/nfs/,+2d' repolist.txt
+
+
+Once this has been completed the file with the repos in it needs including in the original Kiwi file.
+
+We now have a kiwi file that can build the various JeOS images. This can be done as follows
+
+[source]
+kiwi-ng --profile=VMware --type=oem system build --target-dir /tmp/image/VMWare --description .
+
+[source]
+kiwi-ng --profile=kvm-and-xen --type=oem system build --target-dir /tmp/image/xen --description .
+
+*Considerations for images*
+
+_OS file system_
+
+All of the images include BTRFS as the OS file system but this may not be the best fir in all environments and consideration should be given to choosing the appropriate file system. The Openstack image defaults to XFS.
+
+_Initial boot configuration_
+
+The OpenStack image includes the packages that will add cloud-init into the environment so that the images can be configured with the appropriate configuration settings for the environment.
+
+IF some alternative initial boot configuration is required then these can be added into the Kiwi config file as needed.
+
+
+
+
+
+
+
+
