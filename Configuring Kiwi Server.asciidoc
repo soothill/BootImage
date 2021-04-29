@@ -3,15 +3,17 @@
 This document will walk take you through the process for building a Kiwi boot image that will use a local RMT server. The RMT server will use a local repository as the source for the packages.
 
 
-This image will be based on the process for building a JeOS image and can then be further customized to add any local changes that will be needed for your implementation.
+This image will be based on the process for building a JeOS image and can then be further customized to add any local changes that will be needed for your implementation. The JeOS config file has a number of example build environments. It is likely that you will want to build a custom highbred environment using parts from several different builds.
 
 The JeOS build process allows for a number of different images to be built depending on your requirements these include Openstack, KVM and VMWare as well as some other options.
+
+Detailed information on KIWI can be found here https://documentation.suse.com/kiwi/9/single-html/kiwi/index.html
 
 *Configuring a build server*
 
 The first stage to being able to build an image is to connect to the correct Repo's on the RMT server to act as a source for the packages you will need.
 
-
+These connections assuming you are building for an X86 environment.
 
 [source]
     SUSEConnect -p sle-module-desktop-applications/15.2/x86_64
@@ -89,7 +91,8 @@ _Initial boot configuration_
 
 The OpenStack image includes the packages that will add cloud-init into the environment so that the images can be configured with the appropriate configuration settings for the environment.
 
-If some alternative initial boot configuration is required then these can be added into the Kiwi config file as needed.
+If some alternative initial boot configuration is required then these can be added into the Kiwi config file as needed. You can also copy the cloud-init sections into other builds so that the images can be configured to include it. One example of this may be VMWare. This repo has details on how to do this https://github.com/vmware/cloud-init-vmware-guestinfo.
+
 
 
 
