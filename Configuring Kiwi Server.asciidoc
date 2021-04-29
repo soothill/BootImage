@@ -58,7 +58,7 @@ This command will take all the repos and modify them into the correct format to 
 [source]
     for list in $(zypper lr -E | grep SLE[-S] | tr -d ' ' | cut -d'|' -f1); do URL=$(zypper lr -r ${list} | grep ^URI | tr -d ' ' | sed -e 's/URI\://'); echo "    <repository type=\"rpm-md\" >"; echo "    <source path='${URL}'/>"; echo "    </repository>"; done > repolist.txt
 
-By default these will all be set to be https which if you have a valid certificate on your RMT server will work correctly but if the RMT server is using a self signed certificate which is the usual default installaiton then you will need to change this to be http otherwise the kiwi tool will fail.
+By default these will all be set to be https which if you have a valid certificate on your RMT server will work correctly but if the RMT server is using a self signed certificate which is the usual default installation then you will need to change this to be http otherwise the kiwi tool will fail.
 
 [source]
     sed -i 's/https/http/g' repolist.txt
