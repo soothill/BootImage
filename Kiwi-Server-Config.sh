@@ -1,6 +1,6 @@
 # Kiwi Server Config Script
 
-# Connect the various modules that are needed to allow pulling of the appropraite code
+# Connect the various modules that are needed to allow pulling of the appropriate code
 
 SUSEConnect -p sle-module-desktop-applications/15.2/x86_64
 
